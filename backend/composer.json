@@ -1,0 +1,20 @@
+{
+    "name": "petapp/backend",
+    "description": "testando o composer",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "app\\":"app"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pedro Machado",
+            "email": "pedro.machado.rs@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "firebase/php-jwt": "dev-main"
+    }
+}
