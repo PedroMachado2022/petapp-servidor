@@ -43,22 +43,28 @@ try {
     // Criar uma nova conexão usando a classe Connection
     $conn = Connection::getConnection();
 
-    // Aqui você pode usar a variável $email e $password para realizar consultas ou operações no banco de dados
-    // Exemplo:
-    $queryFinally = $conn->prepare("SELECT * FROM emails WHERE email = :email");
+    $queryFinally = $conn->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
     $queryFinally->bindParam(':email', $email);
-    // $queryFinally->bindParam(':senha', $password);
+    $queryFinally->bindParam(':password', $password);
     $queryFinally->execute();
     $result = $queryFinally->fetch(PDO::FETCH_ASSOC);
 
     if ($result != 0) {
-        $response = ['mensagem' => 'PETiano detectado, pode logar!'];
+        if (!password_verify($password, $result['password'])) {
+            // 401 - Acesso negado (erro ao conectar com mysql)
+            http_response_code(401);
+        }
+        // 200 - Tudo certo, PETiano!
+        http_response_code(200);
+        //$response = ['mensagem' => 'PETiano detectado, pode logar!'];
     } else {
-        $response = ['mensagem' => 'Sai fora maluco!'];
+        // 400 - (usuário inexistente)
+        http_response_code(400);
+        //$response = ['mensagem' => 'Sai fora maluco!'];
     }
 
     //$response = ['mensagem' => 'Dados recebidos com sucesso'];
-    echo json_encode($response);
+    //echo json_encode($response);
 } catch (PDOException $e) {
     http_response_code(500);
     exit('Erro ao conectar ao banco de dados');
