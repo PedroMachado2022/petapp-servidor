@@ -2,6 +2,7 @@
 
 use app\database\Connection;
 
+require '../vendor/autoload.php';
 require_once '../app/database/Connection.php';
 
 header("Access-Control-Allow-Origin: *");
@@ -50,16 +51,11 @@ try {
     $result = $queryFinally->fetch(PDO::FETCH_ASSOC);
 
     if ($result != 0) {
-        if (!password_verify($password, $result['password'])) {
-            // 401 - Acesso negado (erro ao conectar com mysql)
-            http_response_code(401);
-        }
-        // 200 - Tudo certo, PETiano!
         http_response_code(200);
         //$response = ['mensagem' => 'PETiano detectado, pode logar!'];
     } else {
-        // 400 - (usuário inexistente)
-        http_response_code(400);
+        // 400 - Campos vazios ou usuário inexistente
+        http_response_code(401);
         //$response = ['mensagem' => 'Sai fora maluco!'];
     }
 

@@ -1,6 +1,5 @@
 {
-    "name": "petapp/backend",
-    "description": "testando o composer",
+    "name": "petapp/servidor",
     "type": "project",
     "autoload": {
         "psr-4": {
@@ -9,12 +8,12 @@
     },
     "authors": [
         {
-            "name": "Pedro Machado",
-            "email": "pedro.machado.rs@hotmail.com"
+            "name": "Pedro Machado"
         }
     ],
     "minimum-stability": "dev",
     "require": {
-        "firebase/php-jwt": "dev-main"
+        "firebase/php-jwt": "dev-main",
+        "vlucas/phpdotenv": "^5.6@dev"
     }
 }
