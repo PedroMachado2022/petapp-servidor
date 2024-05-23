@@ -1,6 +1,7 @@
 <?php
 
 use app\database\UserLogin;
+use app\token\tokenGenerator;
 use Exception;
 
 require '../vendor/autoload.php';
@@ -43,19 +44,22 @@ $email = $data['email'];
 $password = $data['password'];
 
 try {
-    $result = UserLogin::getUserByEmailAndPassword($email, $password);
+    $result = UserLogin::loginVerify($email, $password);
 
     if ($result) {
+
+        $tokenGenerator = new tokenGenerator($result);
+        $token = $tokenGenerator->returnToken();
+
+        // 200 - Tudo certo, aplicativo liberado
         http_response_code(200);
-        //$response = ['mensagem' => 'PETiano detectado, pode logar!'];
+
+        // JWT
+        echo json_encode($token);
     } else {
         // 400 - Campos vazios ou usuário inexistente
         http_response_code(400);
-        //$response = ['mensagem' => 'Sai fora maluco!'];
     }
-
-    //$response = ['mensagem' => 'Dados recebidos com sucesso'];
-    //echo json_encode($response);
 } catch (Exception $e) {
     // 500 - Erro ao conectar com Mysql
     http_response_code(500);

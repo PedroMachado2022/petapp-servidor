@@ -9,7 +9,7 @@ use PDOException;
 
 class UserLogin
 {
-    public static function getUserByEmailAndPassword($email, $password)
+    public static function loginVerify($email, $password)
     {
         try {
             $conn = Connection::getConnection();
