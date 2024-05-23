@@ -8,11 +8,18 @@ class tokenGenerator
     private $payload;
     private $signature;
     private $tokenGenerated = false;
+    private $userData;
+
+    public function __construct($userData)
+    {
+        $this->userData = $userData;
+    }
 
     private function generateToken()
     {
         $this->header = $this->base64UrlEncode('{"alg": "HS256", "typ": "JWT" }');
-        $this->payload = $this->base64UrlEncode('{"name": "Pedro Machado", "iat": ' . time() . '}');
+        $payloadData = array_merge($this->userData, ['iat' => time()]);
+        $this->payload = $this->base64UrlEncode(json_encode($payloadData));
         $this->signature = $this->base64UrlEncode(
             hash_hmac('sha256', $this->header . '.' . $this->payload, 'key', true)
         );
@@ -35,6 +42,10 @@ class tokenGenerator
     }
 }
 
+// $userData = [
+//     'name' => 'Pedro Machado',
+//     'email' => 'pedro@example.com'
+// ];
 
-// $auth = new \app\token\tokenGenerator();
+// $auth = new \app\token\tokenGenerator($userData);
 // echo "Token gerado: " . $auth->returnToken();
