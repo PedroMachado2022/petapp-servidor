@@ -2,24 +2,39 @@
 
 namespace app\token;
 
-class tokenAuth
+class tokenGenerator
 {
-    public function generate()
+    private $header;
+    private $payload;
+    private $signature;
+    private $tokenGenerated = false;
+
+    private function generateToken()
     {
-        $header = $this->base64UrlEncode('{"alg": "HS256", "typ": "JWT" }');
-        $payload = $this->base64UrlEncode('{"name": "Pedro Machado", "iat": ' . time() . '}');
-        $signature = $this->base64UrlEncode(
-            hash_hmac('sha256', $header . '.' . $payload, 'key', true)
+        $this->header = $this->base64UrlEncode('{"alg": "HS256", "typ": "JWT" }');
+        $this->payload = $this->base64UrlEncode('{"name": "Pedro Machado", "iat": ' . time() . '}');
+        $this->signature = $this->base64UrlEncode(
+            hash_hmac('sha256', $this->header . '.' . $this->payload, 'key', true)
         );
 
-        echo $header . '.' . $payload . '.' . $signature;
+        $this->tokenGenerated = true;
     }
 
     private function base64UrlEncode($data)
     {
         return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($data));
     }
+
+    public function returnToken()
+    {
+        if (!$this->tokenGenerated) {
+            $this->generateToken();
+        }
+
+        return $this->header . '.' . $this->payload . '.' . $this->signature;
+    }
 }
 
-// $auth = new tokenAuth();
-// $auth->generate();
+
+// $auth = new \app\token\tokenGenerator();
+// echo "Token gerado: " . $auth->returnToken();

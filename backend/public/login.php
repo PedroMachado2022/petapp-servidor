@@ -1,9 +1,11 @@
 <?php
 
-use app\database\Connection;
+use app\database\UserLogin;
+use Exception;
 
 require '../vendor/autoload.php';
 require_once '../app/database/Connection.php';
+//require_once '../app/models/UserModel.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
@@ -41,27 +43,21 @@ $email = $data['email'];
 $password = $data['password'];
 
 try {
-    // Criar uma nova conexão usando a classe Connection
-    $conn = Connection::getConnection();
+    $result = UserLogin::getUserByEmailAndPassword($email, $password);
 
-    $queryFinally = $conn->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
-    $queryFinally->bindParam(':email', $email);
-    $queryFinally->bindParam(':password', $password);
-    $queryFinally->execute();
-    $result = $queryFinally->fetch(PDO::FETCH_ASSOC);
-
-    if ($result != 0) {
+    if ($result) {
         http_response_code(200);
         //$response = ['mensagem' => 'PETiano detectado, pode logar!'];
     } else {
         // 400 - Campos vazios ou usuário inexistente
-        http_response_code(401);
+        http_response_code(400);
         //$response = ['mensagem' => 'Sai fora maluco!'];
     }
 
     //$response = ['mensagem' => 'Dados recebidos com sucesso'];
     //echo json_encode($response);
-} catch (PDOException $e) {
+} catch (Exception $e) {
+    // 500 - Erro ao conectar com Mysql
     http_response_code(500);
-    exit('Erro ao conectar ao banco de dados');
+    exit($e->getMessage());
 }
