@@ -2,7 +2,6 @@
 
 use app\database\UserLogin;
 use app\token\tokenGenerator;
-use Exception;
 
 require '../vendor/autoload.php';
 require_once '../app/database/Connection.php';
