@@ -34,8 +34,7 @@ $token = $jsonData['jwt'];
 // Recuperamos o token do banco de dados
 $expectedTokenData = UserAuth::authToken($token);
 
-
-// Verifique se o token de autorização é válido
+// Caso o token seja inválido, retornamos 401 e encerramos a conexão
 if (!$expectedTokenData || $token !== $expectedTokenData['token']) {
     // 401 - Não autorizado
     http_response_code(401);

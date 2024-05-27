@@ -56,8 +56,8 @@ try {
         // JWT
         echo json_encode($token);
     } else {
-        // 400 - Campos vazios ou usuário inexistente
-        http_response_code(400);
+        // 401 - Não autorizado
+        http_response_code(401);
     }
 } catch (Exception $e) {
     // 500 - Erro ao conectar com Mysql
