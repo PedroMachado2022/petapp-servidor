@@ -1,5 +1,9 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use app\database\UserAuth;
+
 // Configuração dos cabeçalhos CORS
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -26,16 +30,17 @@ if ($jsonData === null) {
 // Pegamos o campo JWT do Json 
 $token = $jsonData['jwt'];
 
-// Token esperado (Provisório, vamos mudar isso provavelmente)
-$expectedToken = 'yJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCIgfQ.eyJpZCI6MSwiZW1haWwiOiJwZWRyby5tYWNoYWRvLnJzQGhvdG1haWwuY29tIiwicGFzc3dvcmQiOiIxMjM0QCIsImlhdCI6MTcxNjQ4Mzg3MH0.jCFk5SeodxGb-2d6unF0QHfj0llLSvkLtPrzd4tvtvQ'; // Substitua 'seu_token_aqui' pelo token real
+
+// Recuperamos o token do banco de dados
+$expectedTokenData = UserAuth::authToken($token);
+
 
 // Verifique se o token de autorização é válido
-if ($token !== $expectedToken) {
+if (!$expectedTokenData || $token !== $expectedTokenData['token']) {
     // 401 - Não autorizado
     http_response_code(401);
-    // echo json_encode(array('message' => 'Token de autorização inválido.'));
     exit;
 }
 
 // Imprima o JSON recebido (teste de resposta)
-echo 'Dados recebidos do Flutter: ' . json_encode($jsonData);
+echo 'Dados recebidos do Flutter: ' . json_encode($expectedToken);

@@ -3,7 +3,7 @@
         'name' => 'petapp/servidor',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ed4de144ff0053f60af633c29a707f87d6bfb957',
+        'reference' => 'f7db8eb9b5cd611a485601b9a05438d37cfa2c6b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'firebase/php-jwt' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'e9690f56c0bf9cd670655add889b4e243e3ac576',
+            'reference' => '500501c2ce893c824c801da135d02661199f60c5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../firebase/php-jwt',
             'aliases' => array(
@@ -33,7 +33,7 @@
         'petapp/servidor' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ed4de144ff0053f60af633c29a707f87d6bfb957',
+            'reference' => 'f7db8eb9b5cd611a485601b9a05438d37cfa2c6b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
