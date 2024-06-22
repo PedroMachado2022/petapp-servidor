@@ -38,8 +38,11 @@ $expectedTokenData = UserAuth::authToken($token);
 if (!$expectedTokenData || $token !== $expectedTokenData['token']) {
     // 401 - Não autorizado
     http_response_code(401);
+    echo json_encode(array('message' => 'Token inválido'));
     exit;
 }
+
+// Caso contrário o código continua **TUDO** após o login passa por aqui
 
 // Imprima o JSON recebido (teste de resposta)
 echo 'Dados recebidos do Flutter: ' . json_encode($expectedToken);

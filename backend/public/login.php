@@ -2,10 +2,10 @@
 
 use app\database\UserLogin;
 use app\token\tokenGenerator;
+use app\database\UserAuth;
 
 require '../vendor/autoload.php';
 require_once '../app/database/Connection.php';
-//require_once '../app/models/UserModel.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
@@ -46,15 +46,32 @@ try {
     $result = UserLogin::loginVerify($email, $password);
 
     if ($result) {
+        $registred = UserAuth::needPasswordChange($email);
+        file_put_contents('teste.txt', $registred);
+        if ($registred) {
+            // Filtro de dados para o JWT
+            $tokenFields = [
+                'id' => $result['id'],
+                'nome' => $result['nome'],
+                'matricula' => $result['matricula'],
+                'email' => $result['email']
+            ];
 
-        $tokenGenerator = new tokenGenerator($result);
-        $token = $tokenGenerator->returnToken();
+            $tokenGenerator = new tokenGenerator($tokenFields);
+            $token = $tokenGenerator->returnToken();
 
-        // 200 - Tudo certo, aplicativo liberado
-        http_response_code(200);
+            // ATUALIZAR TOKEN
+            $newToken = UserAuth::tokenAtt($token, $email);
 
-        // JWT
-        echo json_encode($token);
+            // 200 - Tudo certo, aplicativo liberado
+            http_response_code(200);
+
+            // JWT 
+            echo json_encode(['token' => $token]);
+        } else {
+            http_response_code(204);
+            exit();
+        }
     } else {
         // 401 - Não autorizado
         http_response_code(401);

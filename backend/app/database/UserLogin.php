@@ -17,6 +17,7 @@ class UserLogin
             $query->bindParam(':email', $email);
             $query->bindParam(':password', $password);
             $query->execute();
+            // RESPONDER
             return $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new PDOException('Erro ao conectar ao banco de dados' . $e->getMessage(), (int)$e->getCode());
