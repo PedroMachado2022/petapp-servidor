@@ -41,7 +41,7 @@ $cargo = $jsonData['cargo'];
 $token = $jsonData['token'];
 
 $validate = UserAuth::validateCargo($token);
-if ($validate === 'master') {
+if ($validate['cargo'] === 'master') {
     // Chame a função para registrar o usuário
     try {
         $result = UserRegister::registerUser($nome, $matricula, $email, $cargo);

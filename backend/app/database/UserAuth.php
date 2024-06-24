@@ -46,14 +46,17 @@ class UserAuth
     {
         try {
             $conn = Connection::getConnection();
-            $query = $conn->prepare("SELECT cargo FROM users WHERE token = :token");
+            $query = $conn->prepare("SELECT cargo, id FROM users WHERE token = :token");
             $query->bindParam(':token', $token);
             $query->execute();
             // RESPONDER 
             //return $query->fetch(PDO::FETCH_ASSOC);
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if ($result) {
-                return $result['cargo'];
+                return [
+                    'cargo' => $result['cargo'],
+                    'id' => $result['id']
+                ];
             } else {
                 return null;
             }
