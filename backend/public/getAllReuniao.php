@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use app\token\tokenAuth;
 use app\database\UserAuth;
 use app\database\reuniao\reuniaoController;
 use app\token\tokenValidate;
@@ -38,33 +37,25 @@ $expectedTokenData = tokenValidate::validateToken($token);
 $validate = UserAuth::validateCargo($token);
 if ($validate['cargo'] == 'master') {
     try {
+        // Buscamos os dados de todas as reuniões do banco
+        $getAllReuniao = reuniaoController::getAllReuniao();
+        // Evitar erros
+        if ($getAllReuniao) {
+            // Lista com todas as reunições
+            $reunioes = [];
 
-        // Verifica se existe alguma reunião ativa
-        $validateFlag = reuniaoController::validateFlag();
-        // Caso haja uma reunião ativa, não permite uma nova criação
-        if ($validateFlag) {
-            http_response_code(400);
-            exit();
-        }
-        $createReuniao = reuniaoController::createReuniao($validate['id']);
+            foreach ($getAllReuniao as $reuniao) {
+                $reunioes[] = [
+                    'id' => $reuniao['id'],
+                    'flag' => $reuniao['flag'],
+                    'dataInicio' => $reuniao['created'],
+                    'dataFim' => $reuniao['finalized']
+                ];
+            }
 
-        // Reunião criada
-        if ($createReuniao) {
-            // Recupera os dados para a realização do QrCode da reunião
-            $returnData = reuniaoController::returnQrCode();
+            $jsonReunioes = json_encode($reunioes);
 
-            // Dados necessários para o controle das reuniões
-            $id = $returnData['id'];
-            $flag = $returnData['flag'];
-            $data = $returnData['created'];
-
-            // QrCode String
-            $qrCode = $returnData['id'] . $returnData['host'] . $returnData['flag'] . $returnData['created'];
-
-            http_response_code(200);
-            echo json_encode(['qrCode' => $qrCode, 'id' => $id, 'flag' => $flag, 'data' => $data]);
-
-            // Falha
+            echo $jsonReunioes;
         } else {
             http_response_code(500);
         }

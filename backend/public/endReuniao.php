@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use app\token\tokenAuth;
 use app\database\UserAuth;
 use app\database\reuniao\reuniaoController;
 use app\token\tokenValidate;
@@ -43,34 +42,12 @@ if ($validate['cargo'] == 'master') {
         $validateFlag = reuniaoController::validateFlag();
         // Caso haja uma reunião ativa, não permite uma nova criação
         if ($validateFlag) {
-            http_response_code(400);
-            exit();
-        }
-        $createReuniao = reuniaoController::createReuniao($validate['id']);
-
-        // Reunião criada
-        if ($createReuniao) {
-            // Recupera os dados para a realização do QrCode da reunião
-            $returnData = reuniaoController::returnQrCode();
-
-            // Dados necessários para o controle das reuniões
-            $id = $returnData['id'];
-            $flag = $returnData['flag'];
-            $data = $returnData['created'];
-
-            // QrCode String
-            $qrCode = $returnData['id'] . $returnData['host'] . $returnData['flag'] . $returnData['created'];
-
+            $endReuniao = reuniaoController::endReuniao();
             http_response_code(200);
-            echo json_encode(['qrCode' => $qrCode, 'id' => $id, 'flag' => $flag, 'data' => $data]);
-
-            // Falha
         } else {
-            http_response_code(500);
+            exit();
         }
     } catch (Exception $e) {
         echo $e;
     }
 }
-
-// Caso contrário o código continua **TUDO** após o login passa por aqui
